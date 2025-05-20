@@ -14,11 +14,14 @@ cd tech-assignment
 ```
 
 ## Part 1: word_frequency.py
-Assuming that python is installed, the script can be run from the command line as follows:
-```bash
-python word_frequency.py
-```
-There are no package dependencies for this script. It uses only the standard library.
+- Assuming that python is installed, the script can be run from the command line as follows:
+    ```bash
+    python word_frequency.py
+    ```
+- There are no package dependencies for this script. It uses only the standard library.
+- The output will look as follows:
+- [![image](assets/image.png)](assets/image.png)
+- Note: While words ranked from 10th to 20th by frequency would typically mean 11 words, this program returns only the 10th through 19th most frequent words, which only contained 10 words, to align with the sample output provided in the assignment. This can be adjusted in the main function of the script.
 
 ## Part 2: my-app
 1. Install the dependencies:
