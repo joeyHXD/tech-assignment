@@ -12,9 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Google Books Search | Next.js App",
-  description: "Search for books using the Google Books API with Next.js",
-  keywords: ["books", "search", "google books", "next.js", "react"],
+  title: "Google Books Search",
+  description: "Search for books using the Google Books API",
 };
 
 export default function RootLayout({ children }) {

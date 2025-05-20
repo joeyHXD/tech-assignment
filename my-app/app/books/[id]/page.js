@@ -1,83 +1,102 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { getBookById, formatBookData } from '../../../lib/api';
-import BookDetails from '../../../components/BookDetails';
-import Loading from '../../../components/Loading';
-import Error from '../../../components/Error';
+import { use } from 'react';
+import Link from "next/link";
 
-/**
- * Book details page component
- * @param {Object} props - Component props
- * @param {Object} props.params - Route parameters
- * @param {string} props.params.id - Book ID from the URL
- */
+// Custom hooks
+import useBookDetails from "@/app/hooks/useBookDetails";
+
+// Components
+import PageContainer from "@/app/components/layout/PageContainer";
+import BookHeader from "@/app/components/book/BookHeader";
+import BookCover from "@/app/components/book/BookCover";
+import BookMetadata from "@/app/components/book/BookMetadata";
+import BookDescription from "@/app/components/book/BookDescription";
+import BookActions from "@/app/components/book/BookActions";
+import ErrorDisplay from "@/app/components/ui/ErrorDisplay";
+
 export default function BookPage({ params }) {
-  const { id } = params;
-  const [book, setBook] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { id } = use(params);
+  const { book, loading, error } = useBookDetails(id);
 
-  useEffect(() => {
-    async function fetchBookDetails() {
-      if (!id) return;
-      
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        console.log('Fetching book details for ID:', id);
-        const data = await getBookById(id);
-        console.log('Book details data:', data);
-        const formattedBook = formatBookData(data);
-        setBook(formattedBook);
-      } catch (err) {
-        console.error('Error fetching book details:', err);
-        setError({
-          message: 'Failed to load book details. Please try again.',
-          code: err.message
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    
-    fetchBookDetails();
-  }, [id]);
-  
-  const retryFetch = () => {
-    if (id) {
-      setIsLoading(true);
-      setError(null);
-      
-      // Add a small delay before retrying to avoid hitting rate limits
-      setTimeout(() => {
-        getBookById(id)
-          .then(data => {
-            const formattedBook = formatBookData(data);
-            setBook(formattedBook);
-          })
-          .catch(err => {
-            console.error('Error retrying book fetch:', err);
-            setError({
-              message: 'Failed to load book details. Please try again.',
-              code: err.message
-            });
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      }, 1000); // 1 second delay before retry
-    }
-  };
-
-  if (isLoading) {
-    return <Loading message="Loading book details..." />;
+  if (loading) {
+    return (
+      <PageContainer>
+        <div className="flex justify-center">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent mb-4"></div>
+            <div className="text-xl">Loading book details...</div>
+          </div>
+        </div>
+      </PageContainer>
+    );
   }
 
-  if (error) {
-    return <Error message={error.message} code={error.code} retry={retryFetch} />;
+  if (error || !book) {
+    return (
+      <PageContainer>
+        <ErrorDisplay message={error || "Book not found"} />
+        <Link href="/" className="text-blue-500 hover:underline">
+          ← Back to search
+        </Link>
+      </PageContainer>
+    );
   }
 
-  return <BookDetails book={book} />;
+  const {
+    volumeInfo: {
+      title,
+      authors = [],
+      description = "No description available",
+      publishedDate,
+      publisher,
+      pageCount,
+      categories = [],
+      imageLinks = {},
+      language,
+      previewLink,
+      infoLink,
+    } = {},
+  } = book;
+
+  return (
+    <PageContainer>
+      <Link href="/" className="text-blue-500 hover:underline mb-8 inline-block">
+        ← Back to search
+      </Link>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+        <div className="md:col-span-1">
+          <BookCover 
+            imageUrl={imageLinks.thumbnail} 
+            title={title} 
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <BookHeader 
+            title={title} 
+            authors={authors} 
+          />
+          
+          <BookMetadata 
+            publishedDate={publishedDate}
+            publisher={publisher}
+            pageCount={pageCount}
+            language={language}
+            categories={categories}
+          />
+          
+          <BookDescription 
+            description={description} 
+          />
+          
+          <BookActions 
+            previewLink={previewLink} 
+            infoLink={infoLink} 
+          />
+        </div>
+      </div>
+    </PageContainer>
+  );
 }
