@@ -34,3 +34,7 @@ npm install
 npm run dev
 ```
 3. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. The web app will look as below:
+
+https://github.com/user-attachments/assets/a54a2702-373c-41c7-ad8a-5ab930f8e5e3
+
