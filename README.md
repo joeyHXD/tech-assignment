@@ -1,7 +1,7 @@
 # Overview
 This repository contains 2 sub projects:
-- word_frequency.py: A Python script. This is the solution to part 1 of the assignment.
-- my-app: A folder containing a next.js application. This is the solution to part 2 of the assignment.
+- `word_frequency.py`: A Python script. This is the solution to part 1 of the assignment.
+- `my-app`: A folder containing a next.js application. This is the solution to part 2 of the assignment.
 
 # How to run the projects
 1. Clone the repository or download the source code
@@ -30,3 +30,4 @@ npm install
 ```bash
 npm run dev
 ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
